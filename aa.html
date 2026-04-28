@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opening UnitePro...</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+          background: #f4f6fa;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 100vh;
+          padding: 24px;
+        }
+        .card {
+          background: white;
+          border-radius: 16px;
+          padding: 32px 24px;
+          text-align: center;
+          max-width: 360px;
+          width: 100%;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .logo {
+          width: 72px;
+          height: 72px;
+          background: #0D56A6;
+          border-radius: 18px;
+          margin: 0 auto 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-size: 28px;
+          font-weight: 700;
+        }
+        h1 { font-size: 20px; color: #1e293b; margin-bottom: 8px; }
+        p  { font-size: 14px; color: #64748b; line-height: 1.5; margin-bottom: 24px; }
+        .btn {
+          display: block;
+          width: 100%;
+          padding: 14px;
+          border-radius: 10px;
+          font-size: 15px;
+          font-weight: 600;
+          text-decoration: none;
+          margin-bottom: 10px;
+          cursor: pointer;
+          border: none;
+        }
+        .btn-primary { background: #0D56A6; color: white; }
+        .btn-outline { background: white; color: #0D56A6; border: 1.5px solid #0D56A6; }
+        .spinner {
+          width: 20px; height: 20px;
+          border: 2px solid rgba(255,255,255,0.3);
+          border-top-color: white;
+          border-radius: 50%;
+          animation: spin 0.8s linear infinite;
+          display: inline-block;
+          vertical-align: middle;
+          margin-right: 8px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="logo">U</div>
+    <h1>Opening UnitePro</h1>
+    <p>You've been invited to join.<br>Tap below to open the app.</p>
+
+    <a id="openBtn" class="btn btn-primary" href="#">
+        <span class="spinner"></span> Opening App...
+    </a>
+
+    <a id="playBtn" class="btn btn-outline"
+       href="https://play.google.com/store/apps/details?id=com.customer.unite.pro"
+       style="display:none">
+        Install from Play Store
+    </a>
+</div>
+
+<script>
+    // ── Read params from current URL ──────────────
+    // https://unitepro.in/app?org_id=X&type=1&currency=2
+    const params = new URLSearchParams(window.location.search);
+    const orgId    = params.get('org_id')   || '';
+    const type     = params.get('type')     || '';
+    const currency = params.get('currency') || '';
+
+    // ── Build deep link ────────────────────────────
+    const deepLink = `unitepro://open?org_id=${orgId}&type=${type}&currency=${currency}`;
+    const playStore = `https://play.google.com/store/apps/details?id=com.customer.unite.pro&referrer=org_id%3D${orgId}%26type%3D${type}%26currency%3D${currency}`;
+
+    const openBtn = document.getElementById('openBtn');
+    const playBtn = document.getElementById('playBtn');
+
+    openBtn.href = deepLink;
+
+    // ── Auto-open after 500ms ──────────────────────
+    setTimeout(() => {
+      window.location.href = deepLink;
+
+      // If app not installed → show Play Store button after 2s
+      setTimeout(() => {
+        openBtn.innerHTML   = '🔗 Open UnitePro App';
+        openBtn.href        = deepLink;
+        playBtn.href        = playStore;
+        playBtn.style.display = 'block';
+      }, 2000);
+    }, 500);
+</script>
+</body>
+</html>
