@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UnitePro Partner App</title>
+    <title>UPro Partner App</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -110,7 +110,7 @@
 
     <!-- ✅ Primary: open app button (user must tap — iOS requires user gesture) -->
     <a id="openBtn" class="btn-open" href="#">
-        🚀 Open UnitePro App
+        🚀 Open UPro Partner App
     </a>
 
     <div class="divider">not installed?</div>
@@ -154,11 +154,11 @@
     if (isIOS) {
         storeBtn.href        = appStore;
         storeBtn.textContent = '📱 Install from App Store';
-        note.textContent     = 'Tap "Open UnitePro App" above. If nothing happens, the app is not installed.';
+        note.textContent     = 'Tap "Open UPro Partner App" above. If nothing happens, the app is not installed.';
     } else if (isAndroid) {
         storeBtn.href        = playStore;
         storeBtn.textContent = '📱 Install from Play Store';
-        note.textContent     = 'Tap "Open UnitePro App" above. If nothing happens, install the app first.';
+        note.textContent     = 'Tap "Open UPro Partner App" above. If nothing happens, install the app first.';
     } else {
         // Desktop
         storeBtn.style.display = 'none';
