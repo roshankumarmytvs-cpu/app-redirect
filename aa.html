@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,304 +7,400 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #0D56A6 0%, #1976D2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 24px;
+            padding: 20px;
+            background: #0a1628;
+            overflow: hidden;
         }
+
+        /* ── Animated background orbs ── */
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.35;
+            animation: float 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+        .bg-orb-1 { width:500px;height:500px;background:radial-gradient(circle,#1565C0,transparent);top:-150px;left:-150px;animation-delay:0s; }
+        .bg-orb-2 { width:400px;height:400px;background:radial-gradient(circle,#0D47A1,transparent);bottom:-100px;right:-100px;animation-delay:-4s; }
+        .bg-orb-3 { width:300px;height:300px;background:radial-gradient(circle,#1976D2,transparent);top:40%;left:50%;transform:translate(-50%,-50%);animation-delay:-2s; }
+        @keyframes float {
+            0%,100% { transform:translate(0,0) scale(1); }
+            33%      { transform:translate(30px,-20px) scale(1.05); }
+            66%      { transform:translate(-20px,15px) scale(0.97); }
+        }
+
+        /* ── Card ── */
         .card {
-            background: white;
-            border-radius: 20px;
-            padding: 36px 28px;
+            position: relative;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 28px;
+            padding: 40px 32px 36px;
             text-align: center;
-            max-width: 340px;
+            max-width: 360px;
             width: 100%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            box-shadow: 0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05) inset;
+        }
+
+        /* ── Logo ── */
+        .logo-wrap { position:relative;width:88px;height:88px;margin:0 auto 24px; }
+        .logo-ring {
+            position:absolute;inset:-6px;border-radius:28px;
+            border:1.5px solid rgba(99,179,237,0.35);
+            animation:ring-pulse 3s ease-in-out infinite;
+        }
+        .logo-ring-2 {
+            position:absolute;inset:-12px;border-radius:32px;
+            border:1px solid rgba(99,179,237,0.15);
+            animation:ring-pulse 3s ease-in-out infinite;animation-delay:-1s;
+        }
+        @keyframes ring-pulse {
+            0%,100%{opacity:0.6;transform:scale(1);}
+            50%{opacity:1;transform:scale(1.04);}
         }
         .logo {
-            width: 80px; height: 80px;
-            background: #0D56A6;
-            border-radius: 20px;
-            margin: 0 auto 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 32px;
-            font-weight: 800;
-            box-shadow: 0 8px 20px rgba(13,86,166,0.3);
+            width:88px;height:88px;
+            background:linear-gradient(145deg,#1565C0,#0D47A1);
+            border-radius:24px;
+            display:flex;align-items:center;justify-content:center;
+            color:white;font-size:36px;font-weight:900;
+            box-shadow:0 12px 30px rgba(13,86,166,0.6),0 0 0 1px rgba(255,255,255,0.15) inset;
+            letter-spacing:-1px;position:relative;
         }
-        h1 { font-size: 22px; color: #1e293b; margin-bottom: 8px; font-weight: 700; }
-        .invite { font-size: 14px; color: #64748b; line-height: 1.6; margin-bottom: 28px; }
 
-        .btn {
+        .app-name { font-size:24px;font-weight:800;color:#fff;margin-bottom:6px;letter-spacing:-0.5px; }
+        .app-tagline { font-size:13px;color:rgba(255,255,255,0.45);margin-bottom:24px;line-height:1.6; }
+
+        /* ── Pills ── */
+        .pills { display:flex;justify-content:center;gap:8px;margin-bottom:28px;flex-wrap:wrap; }
+        .pill {
+            display:flex;align-items:center;gap:5px;
+            background:rgba(255,255,255,0.07);
+            border:1px solid rgba(255,255,255,0.1);
+            border-radius:20px;padding:5px 12px;
+            font-size:11px;color:rgba(255,255,255,0.5);font-weight:500;
+        }
+        .pill-dot { width:6px;height:6px;border-radius:50%;background:#4ade80;animation:blink 2s ease-in-out infinite; }
+        @keyframes blink { 0%,100%{opacity:1;}50%{opacity:0.3;} }
+
+        /* ── State box (loading / result) ── */
+        .state-box {
+            padding: 20px 16px;
+            border-radius: 16px;
+            margin-bottom: 16px;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
             gap: 10px;
-            width: 100%;
-            padding: 16px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 700;
-            text-decoration: none;
-            border: none;
-            cursor: pointer;
-            letter-spacing: 0.3px;
-            margin-bottom: 12px;
-            transition: opacity 0.15s;
         }
-        .btn:active { opacity: 0.85; }
-
-        .btn-open {
-            background: #0D56A6;
-            color: white;
+        .state-box.loading {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
         }
-        .btn-install {
-            background: white;
-            color: #0D56A6;
-            border: 2px solid #0D56A6;
-            font-size: 14px;
-            padding: 14px;
+        .state-box.success {
+            background: rgba(16,185,129,0.1);
+            border: 1px solid rgba(16,185,129,0.25);
+        }
+        .state-box.redirecting {
+            background: rgba(59,130,246,0.1);
+            border: 1px solid rgba(59,130,246,0.25);
         }
 
-        /* Loading spinner inside button */
-        .spinner {
-            width: 18px; height: 18px;
-            border: 2.5px solid rgba(255,255,255,0.4);
-            border-top-color: white;
+        .state-icon { font-size: 32px; line-height: 1; }
+        .state-title { font-size: 15px; font-weight: 700; color: #fff; }
+        .state-sub   { font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.5; }
+
+        /* Spinner */
+        .big-spinner {
+            width: 40px; height: 40px;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top-color: #60a5fa;
             border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-            display: none;
+            animation: spin 0.8s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        .divider {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 4px 0 14px;
-            color: #94a3b8;
-            font-size: 12px;
+        /* Progress bar */
+        .progress-wrap {
+            width: 100%;
+            height: 3px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 4px;
         }
-        .divider::before, .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: #e2e8f0;
+        .progress-bar {
+            height: 100%;
+            background: #60a5fa;
+            border-radius: 2px;
+            width: 0%;
+            transition: width 2.4s linear;
         }
 
-        /* Status banner */
-        .status {
-            display: none;
-            padding: 10px 14px;
-            border-radius: 10px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 14px;
-            text-align: left;
-            line-height: 1.5;
+        /* ── Manual fallback button (only shown if auto fails) ── */
+        .btn {
+            display: flex;align-items:center;justify-content:center;gap:10px;
+            width:100%;padding:16px 20px;border-radius:14px;
+            font-size:15px;font-weight:700;text-decoration:none;
+            border:none;cursor:pointer;letter-spacing:0.1px;
+            margin-bottom:10px;
+            transition:transform 0.15s,box-shadow 0.15s;
         }
-        .status.info  { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
-        .status.warn  { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+        .btn:active { transform:scale(0.98); }
+        .btn-primary {
+            background:linear-gradient(135deg,#1976D2,#1565C0);
+            color:white;
+            box-shadow:0 8px 24px rgba(21,101,192,0.45);
+        }
+        .btn-secondary {
+            background:rgba(255,255,255,0.07);
+            color:rgba(255,255,255,0.7);
+            border:1px solid rgba(255,255,255,0.15);
+            font-size:13px;padding:13px 20px;
+        }
 
-        .note { font-size: 11px; color: #94a3b8; margin-top: 16px; line-height: 1.5; }
-        .hidden { display: none !important; }
+        .note { font-size:11px;color:rgba(255,255,255,0.2);margin-top:16px;line-height:1.6; }
+        .hidden { display:none!important; }
+        .desktop-msg { font-size:14px;color:rgba(255,255,255,0.5);line-height:1.7; }
     </style>
 </head>
 <body>
+
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+<div class="bg-orb bg-orb-3"></div>
+
 <div class="card">
-    <div class="logo">U</div>
-    <h1>UPro Partner</h1>
-    <p class="invite">
-        You've been invited to join.<br>
-        Open the app to get started.
-    </p>
 
-    <!-- Status banner -->
-    <div class="status" id="statusBanner"></div>
+    <div class="logo-wrap">
+        <div class="logo-ring-2"></div>
+        <div class="logo-ring"></div>
+        <div class="logo">U</div>
+    </div>
 
-    <!-- Open App button (shown when app likely installed) -->
-    <a class="btn btn-open" id="openBtn" href="#">
-        <span class="spinner" id="openSpinner"></span>
-        <span id="openBtnText">Open UPro Partner App</span>
-    </a>
+    <div class="app-name">UPro Partner</div>
+    <p class="app-tagline">You've been invited to join.<br>Redirecting you automatically…</p>
 
-    <div class="divider" id="divider">not installed?</div>
+    <div class="pills">
+        <div class="pill"><span class="pill-dot"></span>Secure Invite</div>
+        <div class="pill">Android &amp; iOS</div>
+    </div>
 
-    <!-- Install button -->
-    <a class="btn btn-install" id="installBtn" href="#">
-        <span id="installIcon">📱</span>
-        <span id="installBtnText">Install App</span>
-    </a>
+    <!-- Dynamic state area -->
+    <div id="stateArea"></div>
+
+    <!-- Manual fallback buttons (hidden initially) -->
+    <div id="fallbackBtns" class="hidden"></div>
 
     <p class="note" id="note"></p>
 </div>
 
 <script>
 (function () {
-    // ── Parse URL params ──────────────────────────────────────
+    // ── Params ────────────────────────────────────────────────
     var p        = new URLSearchParams(window.location.search);
     var orgId    = p.get('org_id')   || '';
     var type     = p.get('type')     || '';
     var currency = p.get('currency') || '';
 
-    // ── Device detection ─────────────────────────────────────
+    // ── Device ────────────────────────────────────────────────
     var ua        = navigator.userAgent;
     var isIOS     = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
     var isAndroid = /Android/.test(ua);
     var isMobile  = isIOS || isAndroid;
 
     // ── Links ─────────────────────────────────────────────────
+    // Deep link — custom scheme for direct app open
     var deepLink = 'unitepro://open'
-        + '?org_id='    + encodeURIComponent(orgId)
-        + '&type='      + encodeURIComponent(type)
-        + '&currency='  + encodeURIComponent(currency);
+        + '?org_id='   + encodeURIComponent(orgId)
+        + '&type='     + encodeURIComponent(type)
+        + '&currency=' + encodeURIComponent(currency);
 
-    var appStore  = 'https://apps.apple.com/us/app/unitepro-customer/id6761455372';
-    var playStore = 'https://play.google.com/store/apps/details'
-        + '?id=com.customer.unite.pro'
-        + '&referrer=org_id%3D' + encodeURIComponent(orgId)
-        + '%26type%3D'           + encodeURIComponent(type)
-        + '%26currency%3D'       + encodeURIComponent(currency);
+    // Current page URL (passed as fallback in store referrer)
+    var pageUrl = 'https://www.unitepro.in/upro-partner-app'
+        + '?org_id='   + encodeURIComponent(orgId)
+        + '&type='     + encodeURIComponent(type)
+        + '&currency=' + encodeURIComponent(currency);
 
-    var storeUrl  = isIOS ? appStore : playStore;
-    var storeName = isIOS ? 'App Store' : 'Play Store';
+    // Referrer for Play Store — passes org_id through install
+    var referrer = 'org_id%3D' + encodeURIComponent(orgId)
+                 + '%26type%3D'     + encodeURIComponent(type)
+                 + '%26currency%3D' + encodeURIComponent(currency);
 
-    // ── DOM refs ──────────────────────────────────────────────
-    var openBtn       = document.getElementById('openBtn');
-    var openBtnText   = document.getElementById('openBtnText');
-    var openSpinner   = document.getElementById('openSpinner');
-    var installBtn    = document.getElementById('installBtn');
-    var installBtnText= document.getElementById('installBtnText');
-    var installIcon   = document.getElementById('installIcon');
-    var divider       = document.getElementById('divider');
-    var statusBanner  = document.getElementById('statusBanner');
-    var note          = document.getElementById('note');
+    var playStoreNative = 'market://details'
+        + '?id=com.upro.partner'
+        + '&referrer=' + referrer;
 
-    // ── Desktop: show only "open on mobile" message ───────────
+    var playStoreWeb = 'https://play.google.com/store/apps/details'
+        + '?id=com.upro.partner'
+        + '&referrer=' + referrer;
+
+    var appStoreNative = 'itms-apps://itunes.apple.com/app/id6761455372';
+    var appStoreWeb    = 'https://apps.apple.com/app/id6761455372';
+
+    var storeNative = isIOS ? appStoreNative : playStoreNative;
+    var storeWeb    = isIOS ? appStoreWeb    : playStoreWeb;
+    var storeName   = isIOS ? 'App Store' : 'Play Store';
+    var storeIcon   = isIOS ? '🍎' : '▶️';
+
+    var stateArea    = document.getElementById('stateArea');
+    var fallbackBtns = document.getElementById('fallbackBtns');
+    var note         = document.getElementById('note');
+
+    // ════════════════════════════════════════════════════════
+    // DESKTOP — show simple message
+    // ════════════════════════════════════════════════════════
     if (!isMobile) {
-        openBtn.classList.add('hidden');
-        divider.classList.add('hidden');
-        installBtn.classList.add('hidden');
-        showStatus('info', '💻 Open this link on your mobile device to install or open the app.');
-        note.textContent = 'This link works on Android and iOS devices.';
+        stateArea.innerHTML =
+            '<div class="state-box redirecting">' +
+              '<div class="state-icon">💻</div>' +
+              '<div class="state-title">Mobile Only</div>' +
+              '<div class="state-sub">Open this link on your Android or iOS device to install or launch UPro Partner.</div>' +
+            '</div>';
         return;
     }
 
-    // ── Set install button label ──────────────────────────────
-    installBtnText.textContent = 'Install from ' + storeName;
-    installBtn.href = storeUrl;
+    // ════════════════════════════════════════════════════════
+    // STEP 1 — Show loading state with progress bar
+    // ════════════════════════════════════════════════════════
+    stateArea.innerHTML =
+        '<div class="state-box loading" id="loadingBox">' +
+          '<div class="big-spinner"></div>' +
+          '<div class="state-title">Checking your device…</div>' +
+          '<div class="state-sub">Attempting to open UPro Partner App</div>' +
+          '<div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>' +
+        '</div>';
 
-    // ── Note text ─────────────────────────────────────────────
-    note.textContent = 'If "Open App" doesn\'t work, the app is not installed on this device.';
+    note.textContent = 'Please wait — you\'ll be redirected automatically.';
+
+    // Start progress animation
+    setTimeout(function () {
+        var bar = document.getElementById('progressBar');
+        if (bar) bar.style.width = '100%';
+    }, 50);
 
     // ════════════════════════════════════════════════════════
-    // OPEN APP BUTTON
-    // Tries deep link → waits 2.5s → if still on page = not installed
-    // Shows install button prominently
+    // STEP 2 — Attempt deep link immediately
+    // No button click needed — works on Android Chrome & iOS Safari
+    // via location.href (iOS requires this to be triggered quickly
+    // after page load — within ~1s — to be treated as user-initiated)
     // ════════════════════════════════════════════════════════
-    openBtn.addEventListener('click', function (e) {
-        e.preventDefault();
+    var t0 = Date.now();
+    window.location.href = deepLink;
 
-        // Show spinner + change text
-        openSpinner.style.display = 'block';
-        openBtnText.textContent = 'Opening app…';
-        openBtn.style.pointerEvents = 'none';
+    // ════════════════════════════════════════════════════════
+    // STEP 3 — After 2.6s check if page is still active
+    // If app opened → browser backgrounded → timer delayed >> 2600ms
+    // If not installed → page stays → timer fires ~exactly at 2600ms
+    // ════════════════════════════════════════════════════════
+    var checkTimer = setTimeout(function () {
+        var elapsed = Date.now() - t0;
 
-        hideStatus();
+        if (elapsed > 4000) {
+            // App opened successfully — page came back to foreground
+            showAppOpened();
+        } else {
+            // Still on page → app NOT installed → go to store automatically
+            showRedirectingToStore();
+        }
+    }, 2600);
 
-        // Record time before attempting deep link
-        var t0 = Date.now();
-
-        // Attempt to open app
-        window.location.href = deepLink;
-
-        // After 2500ms — if page is still active, app is not installed
-        setTimeout(function () {
-            // If user left the page (app opened), Date.now() will lag
-            // due to page being backgrounded — elapsed will be >> 2500ms
-            var elapsed = Date.now() - t0;
-
-            // Reset button
-            openSpinner.style.display = 'none';
-            openBtn.style.pointerEvents = 'auto';
-
-            // If elapsed is close to timeout → page stayed active → app NOT installed
-            if (elapsed < 3500) {
-                // App not installed
-                openBtnText.textContent = 'App Not Installed';
-                openBtn.style.background = '#94a3b8';
-                openBtn.style.cursor = 'default';
-                openBtn.style.pointerEvents = 'none';
-
-                // Highlight install button
-                installBtn.style.background  = '#0D56A6';
-                installBtn.style.color       = 'white';
-                installBtn.style.borderColor = '#0D56A6';
-                installBtnText.textContent   = '⬇️  Install from ' + storeName;
-
-                showStatus('warn',
-                    '📲 UPro Partner App is not installed on this device.\n' +
-                    'Tap the button below to install it from the ' + storeName + '.');
-
-                divider.classList.add('hidden');
-            } else {
-                // Elapsed >> timeout → page was backgrounded → app opened ✓
-                openBtnText.textContent = 'Open UPro Partner App';
-            }
-        }, 2500);
-    });
-
-    // ── Install button ────────────────────────────────────────
-    installBtn.addEventListener('click', function (e) {
-        // Let href handle it — just update text briefly
-        installBtnText.textContent = 'Opening ' + storeName + '…';
-        setTimeout(function () {
-            installBtnText.textContent = 'Install from ' + storeName;
-        }, 3000);
+    // ── Also listen for page visibility change ────────────────
+    // When app opens, page becomes hidden. When user returns, visible.
+    var appLaunched = false;
+    document.addEventListener('visibilitychange', function () {
+        if (document.hidden) {
+            // Page hidden = app likely opened
+            appLaunched = true;
+        } else if (appLaunched) {
+            // Came back from app
+            clearTimeout(checkTimer);
+            showAppOpened();
+        }
     });
 
     // ════════════════════════════════════════════════════════
-    // AUTO-OPEN on Android (Chrome supports it without user tap)
-    // iOS Safari REQUIRES user gesture — skip auto on iOS
+    // APP OPENED STATE
     // ════════════════════════════════════════════════════════
-    if (isAndroid) {
-        var t0 = Date.now();
-        window.location.href = deepLink;
+    function showAppOpened() {
+        appLaunched = true;
+        stateArea.innerHTML =
+            '<div class="state-box success">' +
+              '<div class="state-icon">✅</div>' +
+              '<div class="state-title" style="color:#6ee7b7">App Opened!</div>' +
+              '<div class="state-sub">UPro Partner is opening on your device.</div>' +
+            '</div>';
 
+        // Fallback button in case they want to re-open
+        fallbackBtns.classList.remove('hidden');
+        fallbackBtns.innerHTML =
+            '<a class="btn btn-secondary" href="' + deepLink + '">' +
+              'Tap to re-open app' +
+            '</a>';
+
+        note.textContent = 'Switch to the UPro Partner app on your device.';
+    }
+
+    // ════════════════════════════════════════════════════════
+    // NOT INSTALLED — redirect to store automatically
+    // ════════════════════════════════════════════════════════
+    function showRedirectingToStore() {
+        stateArea.innerHTML =
+            '<div class="state-box redirecting" id="storeBox">' +
+              '<div class="state-icon">' + storeIcon + '</div>' +
+              '<div class="state-title">Redirecting to ' + storeName + '…</div>' +
+              '<div class="state-sub">UPro Partner is not installed. Taking you to the store to install it.</div>' +
+              '<div class="progress-wrap"><div class="progress-bar" id="storeBar"></div></div>' +
+            '</div>';
+
+        note.textContent = 'You\'ll be taken to ' + storeName + ' automatically.';
+
+        // Animate progress then redirect
         setTimeout(function () {
-            var elapsed = Date.now() - t0;
-            if (elapsed < 3500) {
-                // Still on page — app not installed, highlight install
-                installBtn.style.background  = '#0D56A6';
-                installBtn.style.color       = 'white';
-                installBtn.style.borderColor = '#0D56A6';
-                installBtnText.textContent   = '⬇️  Install from ' + storeName;
-                openBtnText.textContent      = 'App Not Installed';
-                openBtn.style.background     = '#94a3b8';
-                openBtn.style.pointerEvents  = 'none';
-                divider.classList.add('hidden');
-                showStatus('warn',
-                    '📲 UPro Partner App is not installed.\n' +
-                    'Tap below to install from ' + storeName + '.');
-            }
-            // else: app opened — user is gone from page
-        }, 2500);
-    }
+            var bar = document.getElementById('storeBar');
+            if (bar) bar.style.width = '100%';
+        }, 50);
 
-    // ── Helpers ───────────────────────────────────────────────
-    function showStatus(type, msg) {
-        statusBanner.className = 'status ' + type;
-        statusBanner.style.display = 'block';
-        // preserve line breaks
-        statusBanner.innerHTML = msg.replace(/\n/g, '<br>');
-    }
-    function hideStatus() {
-        statusBanner.style.display = 'none';
+        // Redirect to store after 1.5s
+        setTimeout(function () {
+            // iOS: itms-apps:// opens App Store directly — no prompt
+            // Android: market:// shows a small "Continue" banner at top —
+            // this is the BEST possible UX from a web page in Chrome.
+            // There is no way to open Play Store silently from HTML.
+            window.location.href = storeNative;
+
+            // After 2s — if still here (e.g. market:// not supported
+            // on this browser), fall back to web store URL
+            setTimeout(function () {
+                window.location.href = storeWeb;
+            }, 2000);
+
+            // Show manual button as last resort
+            setTimeout(function () {
+                fallbackBtns.classList.remove('hidden');
+                fallbackBtns.innerHTML =
+                    '<a class="btn btn-primary" id="manualStoreBtn">' +
+                      storeIcon + '  Open ' + storeName +
+                    '</a>' +
+                    '<a class="btn btn-secondary" href="' + deepLink + '">' +
+                      'Already installed — Open App' +
+                    '</a>';
+                document.getElementById('manualStoreBtn').addEventListener('click', function(e){
+                    e.preventDefault();
+                    window.location.href = storeNative;
+                    setTimeout(function(){ window.location.href = storeWeb; }, 2000);
+                });
+                note.textContent = 'Tap above if you were not redirected automatically.';
+            }, 4000);
+        }, 1500);
     }
 
 })();
