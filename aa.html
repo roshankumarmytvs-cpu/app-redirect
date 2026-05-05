@@ -234,7 +234,7 @@
             openBtn.style.pointerEvents = 'auto';
 
             // If elapsed is close to timeout → page stayed active → app NOT installed
-            if (elapsed < 3500) {
+            if (elapsed < 1000) {
                 // App not installed
                 openBtnText.textContent = 'App Not Installed';
                 openBtn.style.background = '#94a3b8';
