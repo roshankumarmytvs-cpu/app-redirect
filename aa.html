@@ -223,14 +223,27 @@
         + '&type='     + encodeURIComponent(type)
         + '&currency=' + encodeURIComponent(currency);
 
-    var appStore  = 'https://apps.apple.com/us/app/unitepro-customer/id6761455372';
-    var playStore = 'https://play.google.com/store/apps/details'
+    // Native app scheme — opens Play Store / App Store app directly (not browser)
+    var playStoreNative = 'market://details'
         + '?id=com.customer.unite.pro'
         + '&referrer=org_id%3D' + encodeURIComponent(orgId)
         + '%26type%3D'          + encodeURIComponent(type)
         + '%26currency%3D'      + encodeURIComponent(currency);
 
-    var storeUrl  = isIOS ? appStore : playStore;
+    var appStoreNative = 'itms-apps://itunes.apple.com/us/app/unitepro-customer/id6761455372';
+
+    // Web fallback (if native scheme fails)
+    var playStoreWeb = 'https://play.google.com/store/apps/details'
+        + '?id=com.customer.unite.pro'
+        + '&referrer=org_id%3D' + encodeURIComponent(orgId)
+        + '%26type%3D'          + encodeURIComponent(type)
+        + '%26currency%3D'      + encodeURIComponent(currency);
+
+    var appStoreWeb = 'https://apps.apple.com/us/app/unitepro-customer/id6761455372';
+
+    var storeNative = isIOS ? appStoreNative : playStoreNative;
+    var storeWeb    = isIOS ? appStoreWeb    : playStoreWeb;
+    var storeUrl    = storeNative;  // primary — native app
     var storeName = isIOS ? 'App Store' : 'Play Store';
     var storeIcon = isIOS ? '🍎' : '▶️';
 
@@ -352,22 +365,34 @@
             if (bar) bar.style.width = '100%';
         }, 50);
 
-        // Redirect to store after 1.5s
+        // Redirect to store after 1.5s — native scheme first, web fallback
         setTimeout(function () {
-            window.location.href = storeUrl;
+            var t1 = Date.now();
 
-            // Fallback manual button in case store redirect blocked
+            // Try native scheme (opens Play Store / App Store app directly)
+            window.location.href = storeNative;
+
+            // After 1.5s — if still here, native scheme failed → try web URL
+            setTimeout(function () {
+                var elapsed2 = Date.now() - t1;
+                if (elapsed2 < 2500) {
+                    // Native scheme didn't work — open web store URL
+                    window.location.href = storeWeb;
+                }
+            }, 1500);
+
+            // Fallback manual button in case both redirects blocked
             setTimeout(function () {
                 fallbackBtns.classList.remove('hidden');
                 fallbackBtns.innerHTML =
-                    '<a class="btn btn-primary" href="' + storeUrl + '">' +
+                    '<a class="btn btn-primary" href="' + storeNative + '" onclick="setTimeout(function(){window.location.href='' + storeWeb + ''},1500)">' +
                       storeIcon + ' Open ' + storeName +
                     '</a>' +
                     '<a class="btn btn-secondary" href="' + deepLink + '">' +
                       'I already installed it — Open App' +
                     '</a>';
                 note.textContent = 'Tap above if you were not redirected automatically.';
-            }, 2000);
+            }, 3500);
         }, 1500);
     }
 
