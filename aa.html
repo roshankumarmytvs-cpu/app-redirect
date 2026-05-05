@@ -223,27 +223,28 @@
         + '&type='     + encodeURIComponent(type)
         + '&currency=' + encodeURIComponent(currency);
 
-    // Native app scheme — opens Play Store / App Store app directly (not browser)
-    var playStoreNative = 'market://details'
-        + '?id=com.customer.unite.pro'
-        + '&referrer=org_id%3D' + encodeURIComponent(orgId)
-        + '%26type%3D'          + encodeURIComponent(type)
-        + '%26currency%3D'      + encodeURIComponent(currency);
+    // ── Android: Intent URL opens Play Store app directly, no browser prompt ──
+    // intent:// scheme bypasses Chrome interstitial completely
+    var referrer = 'org_id%3D' + encodeURIComponent(orgId)
+                 + '%26type%3D' + encodeURIComponent(type)
+                 + '%26currency%3D' + encodeURIComponent(currency);
 
-    var appStoreNative = 'itms-apps://itunes.apple.com/us/app/unitepro-customer/id6761455372';
+    var playStoreIntent =
+        'intent://details?id=com.customer.unite.pro&referrer=' + referrer +
+        '#Intent;scheme=market;package=com.android.vending;end';
 
-    // Web fallback (if native scheme fails)
+    // Web fallback only if intent fails
     var playStoreWeb = 'https://play.google.com/store/apps/details'
         + '?id=com.customer.unite.pro'
-        + '&referrer=org_id%3D' + encodeURIComponent(orgId)
-        + '%26type%3D'          + encodeURIComponent(type)
-        + '%26currency%3D'      + encodeURIComponent(currency);
+        + '&referrer=' + referrer;
 
-    var appStoreWeb = 'https://apps.apple.com/us/app/unitepro-customer/id6761455372';
+    // ── iOS: itms-apps opens App Store app directly ──
+    var appStoreNative = 'itms-apps://itunes.apple.com/us/app/unitepro-customer/id6761455372';
+    var appStoreWeb    = 'https://apps.apple.com/us/app/unitepro-customer/id6761455372';
 
-    var storeNative = isIOS ? appStoreNative : playStoreNative;
-    var storeWeb    = isIOS ? appStoreWeb    : playStoreWeb;
-    var storeUrl    = storeNative;  // primary — native app
+    var storeNative = isIOS ? appStoreNative  : playStoreIntent;
+    var storeWeb    = isIOS ? appStoreWeb     : playStoreWeb;
+    var storeUrl    = storeNative;
     var storeName = isIOS ? 'App Store' : 'Play Store';
     var storeIcon = isIOS ? '🍎' : '▶️';
 
@@ -365,34 +366,39 @@
             if (bar) bar.style.width = '100%';
         }, 50);
 
-        // Redirect to store after 1.5s — native scheme first, web fallback
+        // Redirect to store after 1.5s
         setTimeout(function () {
-            var t1 = Date.now();
+            if (isAndroid) {
+                // Intent URL — opens Play Store app directly, NO browser prompt
+                // Chrome handles intent:// natively, launches com.android.vending
+                window.location.href = storeNative;
+            } else {
+                // iOS — itms-apps:// opens App Store app directly
+                window.location.href = storeNative;
+            }
 
-            // Try native scheme (opens Play Store / App Store app directly)
-            window.location.href = storeNative;
-
-            // After 1.5s — if still here, native scheme failed → try web URL
-            setTimeout(function () {
-                var elapsed2 = Date.now() - t1;
-                if (elapsed2 < 2500) {
-                    // Native scheme didn't work — open web store URL
-                    window.location.href = storeWeb;
-                }
-            }, 1500);
-
-            // Fallback manual button in case both redirects blocked
+            // Manual fallback button after 3s (in case auto-redirect blocked)
             setTimeout(function () {
                 fallbackBtns.classList.remove('hidden');
                 fallbackBtns.innerHTML =
-                    '<a class="btn btn-primary" href="' + storeNative + '" onclick="setTimeout(function(){window.location.href='' + storeWeb + ''},1500)">' +
-                      storeIcon + ' Open ' + storeName +
+                    '<a class="btn btn-primary" id="manualStoreBtn">' +
+                      storeIcon + '  Open ' + storeName +
                     '</a>' +
                     '<a class="btn btn-secondary" href="' + deepLink + '">' +
-                      'I already installed it — Open App' +
+                      'Already installed — Open App' +
                     '</a>';
+
+                // Manual button: try intent first, fallback to web
+                document.getElementById('manualStoreBtn').addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.location.href = storeNative;
+                    setTimeout(function() {
+                        window.location.href = storeWeb;
+                    }, 1500);
+                });
+
                 note.textContent = 'Tap above if you were not redirected automatically.';
-            }, 3500);
+            }, 3000);
         }, 1500);
     }
 
